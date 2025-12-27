@@ -1,0 +1,147 @@
+﻿@page
+@model IndexModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<div class="row mt-4">
+    @* --- 🏆 SOL PANEL: LİDERLİK VE SON NOTLAR --- *@
+    <div class="col-md-3">
+        @* 1. Liderlik Tablosu Kartı *@
+        <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h5 class="mb-0">🏆 En Aktif Gözlemciler</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                @{
+                    int rank = 1;
+                }
+                @if (Model.TopObservers != null)
+                {
+                    @foreach (var leader in Model.TopObservers)
+                    {
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom">
+                            <span class="fw-bold" style="color: #2d3a2d !important;">#@rank @leader.FullName</span>
+                            <span class="badge bg-success rounded-pill px-3">@leader.Count</span>
+                        </div>
+                        rank++;
+                    }
+                }
+            </div>
+        </div>
+
+        @* 2. Son Notlar Kartı *@
+        <div class="card shadow-sm border-0 overflow-hidden">
+            <div class="card-header bg-secondary text-white py-2">
+                <h6 class="mb-0">📝 Son Gözlem Notları</h6>
+            </div>
+            <div class="card-body bg-white p-3">
+                @if (Model.RecentNotes != null && Model.RecentNotes.Any())
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var note in Model.RecentNotes)
+                        {
+                            <li class="border-bottom mb-2 pb-2" style="color: #000000 !important; font-weight: 600; font-size: 0.95rem; line-height: 1.4;">
+                                <i class="bi bi-pencil-fill text-warning me-1"></i> @note
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-dark small mb-0 italic">Henüz bir not bırakılmamış...</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* --- 🐦 SAĞ PANEL: KUŞ LİSTESİ VE ARAMA --- *@
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h4 fw-bold" style="color: #2d6a4f;">Gözlemlenen Kuşlar</h2>
+            @if (HttpContextAccessor.HttpContext?.Session?.GetInt32("UserId") != null)
+            {
+                <div class="btn-group shadow-sm">
+                    <a asp-page="/Index" asp-route-onlyMySightings="true" class="btn btn-outline-success btn-sm fw-bold">👤 Benimkiler</a>
+                    <a asp-page="/Index" class="btn btn-outline-secondary btn-sm fw-bold">🌍 Tüm Liste</a>
+                </div>
+            }
+        </div>
+
+        @* ARAMA FORMU *@
+        <div class="card shadow-sm border-0 p-3 mb-4 bg-white">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="searchTerm" class="form-control border-light" placeholder="Kuş türü veya adı ile ara..."
+                       value="@HttpContextAccessor.HttpContext?.Request.Query["searchTerm"]" />
+                <button type="submit" class="btn btn-primary px-4 text-white fw-bold">ARA</button>
+                @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext?.Request.Query["searchTerm"]))
+                {
+                    <a asp-page="/Index" class="btn btn-danger btn-sm fw-bold d-flex align-items-center">GERİ</a>
+                }
+            </form>
+        </div>
+
+        @* KUŞ TABLOSU *@
+        <div class="card shadow border-0 rounded-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: #e2eadd;">
+                        <tr style="color: #000000 !important;">
+                            <th class="ps-4">KUŞ VE GÖZLEM NOTU</th>
+                            <th>KONUM / GÖZLEMCİ</th>
+                            <th>TARİH</th>
+                            <th class="text-end pe-4">İŞLEMLER</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        @foreach (var item in Model.Sightings)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold fs-5" style="color: #1a1a1a;">@item.BirdName</div>
+                                    @if (!string.IsNullOrEmpty(item.Notes))
+                                    {
+                                        <div class="mt-1 p-2 rounded-2" style="color: #bc4749 !important; font-weight: 600; font-size: 0.85rem; background-color: #fff5f5; border-left: 3px solid #8c7851;">
+                                            <i class="bi bi-chat-dots-fill me-1"></i> @item.Notes
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="text-dark fw-bold small">📍 @item.LocationName</div>
+                                    <div class="text-muted small">👤 @item.ObserverName (@item.ExperienceLevel)</div>
+                                </td>
+                                <td class="text-dark small fw-bold">@item.SightingTime.ToString("dd.MM.yyyy")</td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        @* Detay butonu her zaman çalışır *@
+                                        <a asp-page="/Details" asp-route-id="@item.BirdId" class="btn btn-info btn-sm text-white shadow-sm">Detay</a>
+
+                                        @* ✨ Sadece kayıt sahibi için Güncelle ve Sil butonları ✨ *@
+                                        @if (HttpContextAccessor.HttpContext?.Session.GetString("UserName") == item.ObserverName)
+                                        {
+                                            <a asp-page="/EditBird" asp-route-id="@item.BirdId" class="btn btn-warning btn-sm ms-1 text-white shadow-sm">Güncelle</a>
+
+                                            @* ✨ SİHİRLİ FORM DOKUNUŞU BURADA ŞEKERİM *@
+                                            <form method="post" asp-page-handler="Delete" asp-route-id="@item.BirdId" class="d-inline" onsubmit="return confirm('Bu gözlemi silmek istediğine emin misin şekerim?');">
+                                                <button type="submit" class="btn btn-danger btn-sm ms-1 text-white shadow-sm">Sil</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @* ALTTAKİ DEV EKLE BUTONU *@
+        <div class="my-5 py-4 text-end">
+            @if (HttpContextAccessor.HttpContext?.Session?.GetInt32("UserId") != null)
+            {
+                <a asp-page="/AddSighting" class="btn btn-success btn-lg shadow fw-bold px-5 text-white">
+                    <i class="bi bi-plus-circle-fill me-2"></i> YENİ GÖZLEM EKLE
+                </a>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+﻿@page
+@model DetailsModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Kuş Gözlem Detayları";
+}
+
+<div class="container mt-4">
+    <div class="card border-info shadow">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">🐦 @Model.BirdDetails.CommonName - Detaylı Bilgiler</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-info border-bottom pb-2">Fiziksel Özellikler</h5>
+                    <p><strong>Tür:</strong> @Model.BirdDetails.Species</p>
+                    <p><strong>Renk:</strong> @(Model.BirdDetails.Color ?? "Belirtilmemiş")</p>
+                    <p><strong>Kanat Açıklığı:</strong> @Model.BirdDetails.WingSpan cm</p>
+                    <p><strong>Nesli Tükenme:</strong> @Model.BirdDetails.EndangeredStatus</p>
+                </div>
+                <div class="col-md-6 border-start">
+                    <h5 class="text-success border-bottom pb-2">Gözlem Kaydı</h5>
+                    <p><strong>Nerede Görüldü:</strong> @Model.LocationName</p>
+                    <p><strong>Hava Durumu:</strong> @Model.WeatherType</p>
+                    <p><strong>Gözlemleyen:</strong> @Model.ObserverName</p>
+                </div>
+            </div>
+
+            @* --- ✨ ŞEKERİM NOTLAR BURAYA GELİYOR --- *@
+            <hr />
+            <div class="mt-3">
+                <h5 class="text-secondary"><i class="bi bi-pencil-square"></i> 📝 Gözlemci Notları</h5>
+                <div class="p-3 bg-light rounded border italic" style="font-style: italic; color: #555;">
+                    "@Model.Notes"
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-page="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+
+            @* --- 🔐 GİRİŞ KONTROLÜ BURADA BAŞLIYOR --- *@
+            @if (HttpContextAccessor.HttpContext?.Session?.GetInt32("UserId") != null)
+            {
+                @* Giriş yapmışsa normal düzenleme sayfasına gitsin *@
+                <a asp-page="/EditBird" asp-route-id="@Model.BirdDetails.BirdID" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Bu Kaydı Düzenle
+                </a>
+            }
+            else
+            {
+                @* Giriş yapmamışsa Login sayfasına şutluyoruz *@
+                <a asp-page="/Login" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-box-arrow-in-right"></i> Düzenlemek İçin Giriş Yap
+                </a>
+            }
+        </div>
+    </div>
+</div>

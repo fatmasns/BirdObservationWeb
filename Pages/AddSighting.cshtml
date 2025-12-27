@@ -1,0 +1,52 @@
+﻿@page
+@model AddSightingModel
+@{
+    ViewData["Title"] = "Yeni Gözlem Kaydı";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">🐦 Yeni Kuş ve Gözlem Kaydı</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Kuşun Rengi</label>
+                    <input asp-for="BirdColor" class="form-control" placeholder="Örn: Turuncu-Siyah" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kanat Açıklığı (cm)</label>
+                    <input asp-for="Wingspan" class="form-control" type="number" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kuşun Adı</label>
+                    <input asp-for="BirdName" class="form-control" placeholder="Örn: İskete" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Türü</label>
+                    <input asp-for="BirdSpecies" class="form-control" placeholder="Örn: Fringilla" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nerede Gördün?</label>
+                    <select asp-for="SelectedLocationId" asp-items="Model.Locations" class="form-select">
+                        <option value="">Konum Seç şekerim...</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hava Nasıldı?</label>
+                    <select asp-for="SelectedWeatherId" asp-items="Model.WeatherList" class="form-select">
+                        <option value="">Hava Durumu Seç...</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label fw-bold">Gözlem Notları</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"
+                              placeholder="Kuşun davranışları veya özel renkleri hakkında not al şekerim..."></textarea>
+                </div>
+                <hr />
+                <button type="submit" class="btn btn-success w-100">Gözlemi Kaydet ve Paylaş</button>
+            </form>
+        </div>
+    </div>
+</div>

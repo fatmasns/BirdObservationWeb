@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BirdObservationWeb</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* --- 🎨 ŞEKERİM BURASI DOĞA TEMASI VE OKUNABİLİRLİK SİHRİ --- *@
+    <style>
+        /* Ana Arka Plan: Yumuşak Adaçayı Yeşili */
+        body {
+            background-color: #f1f4f0 !important;
+            color: #2d3436;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navigasyon Çubuğu: Derin Gece Ormanı Yeşili */
+        .navbar {
+            background-color: #2d3a2d !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #e9ecef !important;
+        }
+
+            .nav-link:hover {
+                color: #a7c957 !important;
+            }
+
+        /* Kartlar: Yumuşak Köşeli ve Hafif Gölgeli */
+        .card {
+            border: none !important;
+            border-radius: 15px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Başlıklar */
+        .bg-dark {
+            background-color: #3e4f3c !important;
+        }
+
+        .bg-secondary {
+            background-color: #8c7851 !important;
+        }
+
+        /* ✨ OKUNABİLİRLİK DOKUNUŞLARI - SİLİK YAZILARA SON! */
+        .text-dark, th, td, p, .fw-bold {
+            color: #000000 !important;
+        }
+
+        /* Notların Listesi: Siyah ve Kalın */
+        .list-unstyled li {
+            color: #000000 !important;
+            font-weight: 700 !important;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0 !important;
+        }
+
+        /* Detay Sayfasındaki Not Kutusu */
+        .italic {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-left: 6px solid #8c7851 !important;
+            padding: 20px !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        /* Buton Renkleri ve Okunabilirliği */
+        .btn-primary {
+            background-color: #5b8c5a !important;
+            border-color: #5b8c5a !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        .btn-warning {
+            background-color: #d4a373 !important;
+            border-color: #d4a373 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        .btn-danger {
+            background-color: #bc4749 !important;
+            border-color: #bc4749 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        .btn-info {
+            background-color: #386641 !important;
+            border-color: #386641 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        footer {
+            background-color: #e2eadd;
+            padding: 20px 0;
+            margin-top: 50px;
+            /* ✨ Footer'ın butonun üstüne binmesini engellemek için ekledik */
+            position: relative;
+            clear: both;
+            z-index: 10;
+        }
+
+        /* ✨ ANA İÇERİK ALANI İÇİN KURTARICI BOŞLUK ✨ */
+        main {
+            min-height: 80vh; /* Sayfa çok kısa olsa bile footer aşağıda kalsın */
+            margin-bottom: 100px !important; /* Buton ile footer arasına nefes alacak alan koyar */
+        }
+    </style>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BirdObservationWeb.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom shadow-sm mb-3">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-area="" asp-page="/Index">
+                    <i class="bi bi-tree-fill text-success"></i> Kuş Gözlem Portalı
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Index">Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/AddSighting">Yeni Kuş Ekle</a>
+                        </li>
+
+                        @using Microsoft.AspNetCore.Http
+                        @if (Context.Session.GetInt32("UserId") != null)
+                        {
+                            <li class="nav-item ms-auto">
+                                <span class="nav-link text-white fw-bold">
+                                    Hoş geldin, @Context.Session.GetString("UserName")! 🐦
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-bold" asp-page="/Logout">Çıkış Yap</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item ms-auto">
+                                <a class="nav-link fw-bold text-white" asp-page="/Login">Giriş Yap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-page="/Register">Kaydol</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted text-center">
+        <div class="container">
+            &copy; 2025 - 🌿 <strong class="text-dark">BirdObservationWeb</strong> - Doğayı Keşfet, Kuşları Koru.
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

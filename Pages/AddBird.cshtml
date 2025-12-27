@@ -1,0 +1,34 @@
+﻿@page
+@model BirdObservationWeb.Pages.AddBirdModel
+@{
+    ViewData["Title"] = "Yeni Kuş Kaydı";
+}
+
+<div class="container mt-4">
+    <h2>Yeni Kuş Ekle</h2>
+    <hr />
+    <form method="post" class="col-md-6">
+        <div class="mb-3">
+            <label class="form-label">Kuşun Adı</label>
+            <input asp-for="NewBird.CommonName" class="form-control" placeholder="Örn: Saka" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tür (Species)</label>
+            <input asp-for="NewBird.Species" class="form-control" placeholder="Örn: Carduelis" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kanat Açıklığı (cm)</label>
+            <input asp-for="NewBird.WingSpan" class="form-control" type="number" step="0.01" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nesli Tükenme Durumu</label>
+            <input asp-for="NewBird.EndangeredStatus" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Renk</label>
+            <input asp-for="NewBird.Color" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Veritabanına Gönder</button>
+        <a asp-page="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>

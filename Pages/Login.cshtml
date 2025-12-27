@@ -1,0 +1,33 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container mt-5" style="max-width: 400px;">
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>Kuşçu Girişi 🦅</h4>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">E-posta</label>
+                    <input asp-for="Email" class="form-control" type="email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Şifre</label>
+                    <input asp-for="Password" class="form-control" type="password" required />
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100">Giriş Yap</button>
+            </form>
+            <div class="mt-3 text-center">
+                <small>Henüz hesabın yok mu? <a asp-page="/Register">Hemen Kaydol</a></small>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Kuş Gözlem Dünyasına Katıl";
+}
+
+<div class="container mt-5" style="max-width: 450px;">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h4>Kayıt Ol 📝</h4>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                @* Şekerim, arka plandan gelen hataları (mesela e-posta geçersiz hatası) burada göstereceğiz *@
+                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tam Adınız</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Örn: Fatma Kuşçu" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">E-posta</label>
+                    <input asp-for="Email" type="email" class="form-control"
+                           placeholder="ornek@gmail.com"
+                    @* Şekerim bu kural sadece gmail, icloud, hotmail ve outlook kabul eder *@
+                           pattern="[a-z0-9._%+-]+@@(gmail\.com|icloud\.com|hotmail\.com|outlook\.com)$"
+                           title="Sadece Gmail, iCloud, Hotmail veya Outlook adreslerini kabul ediyoruz şekerim! 🐦"
+                           required />
+                    <div class="form-text">Şimdilik sadece Gmail, iCloud ve Microsoft hesaplarını kabul ediyoruz.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Şifre</label>
+                    <input asp-for="Password" type="password" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">Hesabımı Oluştur</button>
+            </form>
+            <div class="mt-3 text-center">
+                <small>Zaten hesabın var mı? <a asp-page="/Login">Giriş Yap</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@* Bu kısım, sayfa yenilenmeden hataları hemen kutucuğun altında göstermeye yarar *@
+    <partial name="_ValidationScriptsPartial" />
+}
